@@ -9,8 +9,7 @@ import requests
 from tqdm import tqdm
 
 
-NODE_HOST="http://178.62.237.188/api/v0"
-# NODE_HOST = "https://api.bitclout.com"
+NODE_HOST = "https://api.bitclout.com"
 
 
 def get_single_profile(username):
@@ -94,11 +93,11 @@ def get_user(username, users):
 
 pool = eventlet.GreenPool(size=30)
 
-for fname in ['bots', 'non_bots']:
-    df = pd.read_csv(f'{fname}.csv')
-    users = []    
+for fname in ['my_bots', 'my_non_bots']:
+    df = pd.read_csv(f'../{fname}.csv', names=['key', 'username'])
+    users = []
     for u in df.username.values:                
         pool.spawn(get_user, u, users)        
     pool.waitall()
-    with open(f'{fname}.json', 'w') as f:
+    with open(f'../{fname}.json', 'w') as f:
         json.dump(users, f)
